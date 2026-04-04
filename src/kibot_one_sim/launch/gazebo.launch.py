@@ -20,7 +20,7 @@ def generate_launch_description():
     world_arg = DeclareLaunchArgument(
         'world',
         default_value=str(default_world),
-        description='Absolute path to the Gazebo world file',
+        description='Gazebo 世界文件的绝对路径。',
     )
 
     gz_resource_path = SetEnvironmentVariable(
