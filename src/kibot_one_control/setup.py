@@ -1,3 +1,5 @@
+# mypy: disable-error-code="import-untyped"
+
 from setuptools import find_packages, setup
 
 package_name = 'kibot_one_control'
@@ -17,11 +19,6 @@ setup(
     maintainer_email='2094901072@qq.com',
     description='机器人核心逻辑',
     license='Apache-2.0',
-    extras_require={
-        'test': [
-            'pytest',
-        ],
-    },
     entry_points={
         'console_scripts': [
         ],

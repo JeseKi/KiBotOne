@@ -1,3 +1,5 @@
+# mypy: disable-error-code="import-untyped"
+
 from pathlib import Path
 import os
 
