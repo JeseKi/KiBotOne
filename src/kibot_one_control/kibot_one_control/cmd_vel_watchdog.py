@@ -5,7 +5,7 @@ from rclpy.duration import Duration
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist # type: ignore
 
 class CMDVelWatchDog(Node):
 
