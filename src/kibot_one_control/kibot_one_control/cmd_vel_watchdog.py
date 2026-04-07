@@ -66,14 +66,18 @@ class CMDVelWatchDog(Node):
             
             self.last_command_was_zero = True
 
-def main(args = None) -> None:
+def main(args=None) -> None:
+    cmd_vel_watchdog = None
     try:
-        with rclpy.init(args=args): # type: ignore
-            cmd_vel_watchdog = CMDVelWatchDog()
-
-            rclpy.spin(cmd_vel_watchdog)
+        rclpy.init(args=args)
+        cmd_vel_watchdog = CMDVelWatchDog()
+        rclpy.spin(cmd_vel_watchdog)
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
+    finally:
+        if cmd_vel_watchdog is not None:
+            cmd_vel_watchdog.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == "__main__":
     main()
