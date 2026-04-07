@@ -21,6 +21,7 @@ setup(
     license='Apache-2.0',
     entry_points={
         'console_scripts': [
+            'cmd_vel_watchdog = kibot_one_control.cmd_vel_watchdog:main',
         ],
     },
 )
