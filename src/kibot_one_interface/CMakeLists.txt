@@ -23,10 +23,13 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
+
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Mode.msg"
   "srv/Mode.srv"
+  DEPENDENCIES geometry_msgs
 )
 
 ament_package()

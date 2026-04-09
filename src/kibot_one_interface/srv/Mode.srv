@@ -1,4 +1,5 @@
 uint8 target_mode
+geometry_msgs/Twist linear_velocity
 ---
 bool success
 string message
