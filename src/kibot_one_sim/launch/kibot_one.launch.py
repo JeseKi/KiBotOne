@@ -31,6 +31,16 @@ def generate_launch_description() -> LaunchDescription:
         default_value="0.1",
         description="cmd_vel watchdog 超时检查周期，单位秒。"
     )
+    mode_arg = DeclareLaunchArgument(
+        name="mode",
+        default_value="2",
+        description="小车的运行模式"
+    )
+    mode_pub_timer_period_arg = DeclareLaunchArgument(
+        name="mode_pub_timer_period",
+        default_value="0.01667",
+        description="模式控制器发布 STOP, CRUISE 模式下速度的时间间隔，单位秒"
+    )
 
     start_sim = IncludeLaunchDescription(
         launch_description_source=PythonLaunchDescriptionSource(str(sim_with_bridge_launch)),
@@ -49,11 +59,24 @@ def generate_launch_description() -> LaunchDescription:
             "watch_time_period": LaunchConfiguration("watch_time_period")
         }]
     )
+    start_mode_control = Node(
+        package="kibot_one_control",
+        executable="mode_control",
+        name="mode_control",
+        output="screen",
+        parameters=[{
+            "mode": LaunchConfiguration("mode"),
+            "mode_pub_timer_period": LaunchConfiguration("mode_pub_timer_period")
+        }]
+    )
 
     return LaunchDescription([
         world_arg,
         stop_time_period_arg,
         watch_time_period_arg,
+        mode_arg,
+        mode_pub_timer_period_arg,
         start_sim,
-        start_cmd_vel_watchdog
+        start_cmd_vel_watchdog,
+        start_mode_control,
     ])

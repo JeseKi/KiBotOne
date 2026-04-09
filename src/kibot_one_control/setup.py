@@ -23,6 +23,7 @@ setup(
         'console_scripts': [
             'cmd_vel_watchdog = kibot_one_control.cmd_vel_watchdog:main',
             'keyboard_teleop = kibot_one_control.keyboard_teleop:main',
+            'mode_control = kibot_one_control.mode_control:main',
         ],
     },
 )
