@@ -115,7 +115,8 @@ def main(args = None) -> None:
     finally:
         if mode_control is not None:
             mode_control.destroy_node()
-        rclpy.shutdown()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 if __name__ == "__main__":
     main()

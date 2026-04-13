@@ -77,7 +77,8 @@ def main(args=None) -> None:
     finally:
         if cmd_vel_watchdog is not None:
             cmd_vel_watchdog.destroy_node()
-        rclpy.shutdown()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 if __name__ == "__main__":
     main()
