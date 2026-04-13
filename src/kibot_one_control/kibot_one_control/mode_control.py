@@ -2,12 +2,14 @@ from typing import Any, cast
 from enum import IntEnum
 
 import rclpy
+from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy, QoSProfile, QoSReliabilityPolicy
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.parameter import Parameter
 
 from geometry_msgs.msg import Twist # type: ignore
 
+from kibot_one_interface.msg import ModeState # type: ignore
 from kibot_one_interface.srv import Mode as ModeSrv # type: ignore
 
 class Mode(IntEnum):
@@ -21,14 +23,26 @@ class ModeControl(Node):
         super().__init__(node_name="mode_control")
 
         self.linear_velocity = Twist()
+        self.mode_qos = QoSProfile(
+            history=QoSHistoryPolicy.KEEP_LAST,
+            depth=1,
+            reliability=QoSReliabilityPolicy.RELIABLE,
+            durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
+        )
 
         params = [
             ("mode", Mode.MANUAL),
-            ("mode_pub_timer_period", 0.01667)
+            ("mode_pub_timer_period", 0.01667),
+            ('mode_topic', 'mode'),
         ]
         self.declare_parameters(namespace="", parameters=cast(Any, params))
         
         self.srv = self.create_service(srv_type=ModeSrv, srv_name="mode_control", callback=self._change_mode)
+        self.mode_state_publisher = self.create_publisher(
+            msg_type=ModeState,
+            topic=cast(str, self.get_parameter('mode_topic').value),
+            qos_profile=self.mode_qos,
+        )
         
         self.mode_vel_publisher = self.create_publisher(
             msg_type=Twist,
@@ -41,6 +55,7 @@ class ModeControl(Node):
             ),
             callback=self._pub_timer_callback
         )
+        self._publish_mode_state(self._get_current_mode())
 
     def _pub_timer_callback(self) -> None:
         current_mode = self._get_current_mode()
@@ -72,6 +87,7 @@ class ModeControl(Node):
             self.set_parameters(all_new_parameters)
             if new_mode == Mode.CRUISE:
                 self.linear_velocity = request.linear_velocity
+            self._publish_mode_state(new_mode)
             
             response.success = True
             response.message = f"成功改变运行模式 {current_mode.name} -> {new_mode.name}"
@@ -103,6 +119,11 @@ class ModeControl(Node):
         
     def _get_current_mode(self) -> Mode:
         return Mode(self.get_parameter("mode").value)
+
+    def _publish_mode_state(self, mode: Mode) -> None:
+        mode_state = ModeState()
+        mode_state.current_mode = mode.value
+        self.mode_state_publisher.publish(mode_state)
         
 def main(args = None) -> None:
     mode_control = None

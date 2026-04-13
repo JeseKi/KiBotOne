@@ -2,16 +2,16 @@ import select
 import sys
 import termios
 import tty
-from typing import cast
+
 import rclpy
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
-from rclpy.parameter_client import AsyncParameterClient
-from rcl_interfaces.srv import GetParameters_Response # type: ignore
+from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy, QoSProfile, QoSReliabilityPolicy
 
 from geometry_msgs.msg import Twist # type: ignore
+from kibot_one_interface.msg import ModeState # type: ignore
 
-MODE_CONTROL_NAME = "mode_control"
+MANUAL_MODE_VALUE = 2
 
 class KeyboardTeleop(Node):
 
@@ -22,14 +22,10 @@ class KeyboardTeleop(Node):
         self.declare_parameter('linear_speed', 0.8)
         self.declare_parameter('angular_speed', 1.5)
         self.declare_parameter('poll_timeout', 0.1)
-        self.mode_control_param_client = AsyncParameterClient(node=self, remote_node_name=MODE_CONTROL_NAME)
-        self.mode_control_ok = self.mode_control_param_client.wait_for_services(timeout_sec=3.0)
-        if not self.mode_control_ok:
-            self.get_logger().error(f"{MODE_CONTROL_NAME} 节点参数不可用")
+        self.declare_parameter('mode_topic', 'mode')
 
-        cmd_vel_raw_topic = self.get_parameter(
-            'cmd_vel_raw_topic'
-        ).get_parameter_value().string_value
+        cmd_vel_raw_topic = self.get_parameter('cmd_vel_raw_topic').get_parameter_value().string_value
+        mode_topic = self.get_parameter('mode_topic').get_parameter_value().string_value
 
         self.linear_speed = self.get_parameter(
             'linear_speed'
@@ -40,8 +36,16 @@ class KeyboardTeleop(Node):
         self.poll_timeout = self.get_parameter(
             'poll_timeout'
         ).get_parameter_value().double_value
+        self.current_mode = MANUAL_MODE_VALUE
+        self.mode_qos = QoSProfile(
+            history=QoSHistoryPolicy.KEEP_LAST,
+            depth=1,
+            reliability=QoSReliabilityPolicy.RELIABLE,
+            durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
+        )
 
-        self.cmd_vel_raw_publisher = self.create_publisher(Twist, cmd_vel_raw_topic, 10)
+        self.cmd_vel_raw_publisher = self.create_publisher(msg_type=Twist, topic=cmd_vel_raw_topic, qos_profile=10)
+        self.mode_sub = self.create_subscription(msg_type=ModeState, topic=mode_topic, callback=self.mode_callback, qos_profile=self.mode_qos)
 
         self._settings = termios.tcgetattr(sys.stdin)
 
@@ -59,7 +63,6 @@ class KeyboardTeleop(Node):
 
     def run(self) -> None:
         self.print_help()
-        current_mode = 2
         try:
             while rclpy.ok():
                 key = self.read_key()
@@ -77,24 +80,13 @@ class KeyboardTeleop(Node):
 
                 cmd = self.key_to_twist(key)
 
-
-                if self.mode_control_ok:
-                    future = self.mode_control_param_client.get_parameters(names=["mode"])
-                    rclpy.spin_until_future_complete(node=self, future=future, timeout_sec=3.0)
-
-                    if not future.done() or future.result() is None:
-                        self.get_logger().error(f"获取 {MODE_CONTROL_NAME} 参数失败")
-                    else:
-                        response = cast(GetParameters_Response, future.result())
-                        if not response.values:
-                            self.get_logger().error(f"{MODE_CONTROL_NAME} 未返回 mode 参数")
-                        else:
-                            current_mode = response.values[0].integer_value # type: ignore
-                            
-                if cmd is not None and current_mode == 2:
+                if cmd is not None and self.current_mode == MANUAL_MODE_VALUE:
                     self.cmd_vel_raw_publisher.publish(cmd)
         finally:
             self.restore_terminal()
+
+    def mode_callback(self, msg: ModeState) -> None:
+        self.current_mode = msg.current_mode
 
     def read_key(self) -> str | None:
         tty.setraw(sys.stdin.fileno())
