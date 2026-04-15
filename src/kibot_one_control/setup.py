@@ -12,6 +12,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        ('share/' + package_name + '/launch', ['launch/follow_phase1.launch.py']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -24,6 +25,8 @@ setup(
             'cmd_vel_watchdog = kibot_one_control.cmd_vel_watchdog:main',
             'keyboard_teleop = kibot_one_control.keyboard_teleop:main',
             'mode_control = kibot_one_control.mode_control:main',
+            'flag_pose_publisher = kibot_one_control.flag_pose_publisher:main',
+            'follow_controller = kibot_one_control.follow_controller:main',
         ],
     },
 )

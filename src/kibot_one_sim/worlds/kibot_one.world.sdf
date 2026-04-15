@@ -58,5 +58,10 @@
       <uri>model://kibot_one_base</uri>
       <pose>0 0 0 0 0 0</pose>
     </include>
+
+    <include>
+      <uri>model://follow_flag</uri>
+      <pose>2.5 1.0 0 0 0 0</pose>
+    </include>
   </world>
 </sdf>

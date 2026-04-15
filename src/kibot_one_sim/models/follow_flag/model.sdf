@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="follow_flag">
+    <static>true</static>
+
+    <link name="flag_base">
+      <collision name="base_collision">
+        <pose>0 0 0.05 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.12</radius>
+            <length>0.10</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name="base_visual">
+        <pose>0 0 0.05 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.12</radius>
+            <length>0.10</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.15 0.15 0.15 1</ambient>
+          <diffuse>0.20 0.20 0.20 1</diffuse>
+          <specular>0.02 0.02 0.02 1</specular>
+        </material>
+      </visual>
+
+      <collision name="pole_collision">
+        <pose>0 0 0.60 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.02</radius>
+            <length>1.00</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name="pole_visual">
+        <pose>0 0 0.60 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.02</radius>
+            <length>1.00</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.70 0.70 0.70 1</ambient>
+          <diffuse>0.80 0.80 0.80 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+        </material>
+      </visual>
+
+      <visual name="flag_visual">
+        <pose>0.18 0 1.00 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.30 0.02 0.20</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.80 0.10 0.10 1</ambient>
+          <diffuse>0.90 0.15 0.15 1</diffuse>
+          <specular>0.08 0.08 0.08 1</specular>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>
