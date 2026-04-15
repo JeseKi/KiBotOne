@@ -1,5 +1,5 @@
 import math
-from typing import cast
+from typing import Any, cast
 
 import rclpy
 from geometry_msgs.msg import PoseStamped, Twist  # type: ignore
@@ -31,7 +31,7 @@ class FollowController(Node):
             ('max_angular_speed', 1.20),
         ]
 
-        self.declare_parameters(namespace='', parameters=params)
+        self.declare_parameters(namespace='', parameters=cast(Any, params))
 
 
         self.robot_x: float | None = None

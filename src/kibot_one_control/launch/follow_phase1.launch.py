@@ -1,11 +1,11 @@
 from pathlib import Path
 
-from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
-from launch_ros.actions import Node
+from ament_index_python.packages import get_package_share_directory # type: ignore
+from launch import LaunchDescription # type: ignore
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription # type: ignore
+from launch.launch_description_sources import PythonLaunchDescriptionSource # type: ignore
+from launch.substitutions import LaunchConfiguration # type: ignore
+from launch_ros.actions import Node # type: ignore
 
 
 def generate_launch_description() -> LaunchDescription:

@@ -3,10 +3,10 @@
 from pathlib import Path
 import os
 
-from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess, SetEnvironmentVariable
-from launch.substitutions import LaunchConfiguration
+from ament_index_python.packages import get_package_share_directory # type: ignore
+from launch import LaunchDescription # type: ignore
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, SetEnvironmentVariable # type: ignore
+from launch.substitutions import LaunchConfiguration # type: ignore
 
 
 def generate_launch_description():
