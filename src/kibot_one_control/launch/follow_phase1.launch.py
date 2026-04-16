@@ -34,11 +34,6 @@ def generate_launch_description() -> LaunchDescription:
         executable='cmd_vel_watchdog',
         output='screen',
     )
-    flag_pose_publisher = Node(
-        package='kibot_one_control',
-        executable='flag_pose_publisher',
-        output='screen',
-    )
     follow_controller = Node(
         package='kibot_one_control',
         executable='follow_controller',
@@ -50,6 +45,5 @@ def generate_launch_description() -> LaunchDescription:
         start_sim,
         mode_control,
         watchdog,
-        flag_pose_publisher,
         follow_controller,
     ])
