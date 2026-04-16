@@ -1,0 +1,1 @@
+你可以通过 `source .vscode/project-terminal-init.sh` 来激活 ROS2 运行环境。

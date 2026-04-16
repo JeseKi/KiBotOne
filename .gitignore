@@ -36,7 +36,6 @@ pip-wheel-metadata/
 
 # IDE / editor files
 .idea/
-.vscode/
 *.swp
 *.swo
 *~
