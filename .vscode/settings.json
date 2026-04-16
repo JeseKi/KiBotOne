@@ -1,0 +1,30 @@
+{
+    "python-envs.defaultEnvManager": "ms-python.python:venv",
+    "python-envs.defaultPackageManager": "ms-python.python:pip",
+    "python.defaultInterpreterPath": "/usr/bin/python3",
+    "python.analysis.extraPaths": [
+        "/opt/ros/jazzy/lib/python3.12/site-packages",
+        "/usr/lib/python3/dist-packages",
+        "/opt/ros/jazzy/opt/gz_msgs_vendor/lib/python",
+        "${workspaceFolder}/install/kibot_one_interface/lib/python3.12/site-packages",
+        "${workspaceFolder}/install/kibot_one_control/lib/python3.12/site-packages"
+    ],
+    "python.analysis.exclude": [
+        "**/build/**",
+        "**/install/**",
+        "**/log/**",
+        "**/.mypy_cache/**",
+        "**/.venv/**"
+    ],
+    "terminal.integrated.profiles.linux": {
+    "Project Bash": {
+      "path": "/bin/bash",
+      "args": [
+        "--rcfile",
+        "${workspaceFolder}/.vscode/project-terminal-init.sh",
+        "-i"
+      ]
+    }
+  },
+  "terminal.integrated.defaultProfile.linux": "Project Bash"
+}
