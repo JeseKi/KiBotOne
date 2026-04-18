@@ -27,4 +27,11 @@
   ros_type_name: "geometry_msgs/msg/PoseStamped"
   gz_type_name: "gz.msgs.Pose"
   direction: GZ_TO_ROS
-  frame_id: "odom"
+  frame_id: "world"
+
+- ros_topic_name: "/robot_pose"
+  gz_topic_name: "/model/kibot_one_base/pose"
+  ros_type_name: "geometry_msgs/msg/PoseStamped"
+  gz_type_name: "gz.msgs.Pose"
+  direction: GZ_TO_ROS
+  frame_id: "world"

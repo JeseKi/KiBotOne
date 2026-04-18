@@ -20,6 +20,7 @@ class FollowController(Node):
         params = [
             ('mode_topic', 'mode'),
             ('odom_topic', 'odom'),
+            ('robot_pose_topic', 'robot_pose'),
             ('flag_pose_topic', 'flag_pose'),
             ('cmd_vel_raw_topic', 'cmd_vel_raw'),
             ('control_period', 0.05),
@@ -37,6 +38,7 @@ class FollowController(Node):
         self.robot_x: float | None = None
         self.robot_y: float | None = None
         self.robot_yaw: float | None = None
+        self.has_robot_pose = False
         self.flag_x: float | None = None
         self.flag_y: float | None = None
         self.current_mode = 2
@@ -66,6 +68,12 @@ class FollowController(Node):
         )
         self.create_subscription(
             msg_type=PoseStamped,
+            topic=cast(str, self.get_parameter('robot_pose_topic').value),
+            callback=self._robot_pose_callback,
+            qos_profile=10,
+        )
+        self.create_subscription(
+            msg_type=PoseStamped,
             topic=cast(str, self.get_parameter('flag_pose_topic').value),
             callback=self._flag_pose_callback,
             qos_profile=10,
@@ -79,13 +87,18 @@ class FollowController(Node):
         self.current_mode = msg.current_mode
 
     def _odom_callback(self, msg: Odometry) -> None:
+        if self.has_robot_pose:
+            return
+
         self.robot_x = msg.pose.pose.position.x
         self.robot_y = msg.pose.pose.position.y
+        self.robot_yaw = self._yaw_from_quaternion(msg.pose.pose.orientation)
 
-        orientation = msg.pose.pose.orientation
-        siny_cosp = 2.0 * (orientation.w * orientation.z + orientation.x * orientation.y)
-        cosy_cosp = 1.0 - 2.0 * (orientation.y * orientation.y + orientation.z * orientation.z)
-        self.robot_yaw = math.atan2(siny_cosp, cosy_cosp)
+    def _robot_pose_callback(self, msg: PoseStamped) -> None:
+        self.has_robot_pose = True
+        self.robot_x = msg.pose.position.x
+        self.robot_y = msg.pose.position.y
+        self.robot_yaw = self._yaw_from_quaternion(msg.pose.orientation)
 
     def _flag_pose_callback(self, msg: PoseStamped) -> None:
         self.flag_x = msg.pose.position.x
@@ -136,6 +149,12 @@ class FollowController(Node):
     @staticmethod
     def _normalize_angle(angle: float) -> float:
         return math.atan2(math.sin(angle), math.cos(angle))
+
+    @staticmethod
+    def _yaw_from_quaternion(orientation) -> float:
+        siny_cosp = 2.0 * (orientation.w * orientation.z + orientation.x * orientation.y)
+        cosy_cosp = 1.0 - 2.0 * (orientation.y * orientation.y + orientation.z * orientation.z)
+        return math.atan2(siny_cosp, cosy_cosp)
 
 
 def main(args=None) -> None:
