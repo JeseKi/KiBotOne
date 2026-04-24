@@ -2,6 +2,7 @@ import math
 from typing import Any, cast
 
 import rclpy
+from rclpy.time import Time
 from geometry_msgs.msg import PoseStamped, Twist  # type: ignore
 from kibot_one_interface.msg import ModeState  # type: ignore
 from nav_msgs.msg import Odometry  # type: ignore
@@ -61,7 +62,7 @@ class FollowController(Node):
         self.flag_x: float | None = None
         self.flag_y: float | None = None
         self.latest_scan: LaserScan | None = None
-        self.last_scan_received_time = None
+        self.last_scan_received_time: Time | None = None
         self.current_mode = 2
         self.mode_qos = QoSProfile(
             history=QoSHistoryPolicy.KEEP_LAST,
