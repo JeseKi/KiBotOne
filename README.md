@@ -249,6 +249,12 @@ make check   # mypy . && ruff check --fix
 make test    # python -m pytest . -q
 ```
 
+## GitHub Pages
+
+项目展示页位于 `docs/index.html`。在 GitHub 仓库设置中启用 Pages，并选择 `main` 分支的 `/docs` 目录即可发布。
+
+页面包含手操 HTML 演示、自主避障导航 HTML 演示，以及待替换的视频链接占位。
+
 ## 排查建议
 
 - 如果 `ros2 launch` 找不到包，确认已经执行 `colcon build` 并 `source install/setup.bash`。

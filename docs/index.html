@@ -1,0 +1,1553 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KiBotOne 项目展示</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #18202b;
+      --muted: #5c6878;
+      --line: #d7dde6;
+      --paper: #f5f7fa;
+      --panel: #ffffff;
+      --panel-strong: #eef3f8;
+      --accent: #1f7a8c;
+      --accent-strong: #155e75;
+      --warm: #c56b2d;
+      --green: #2f7d57;
+      --danger: #b13c3c;
+      --shadow: 0 16px 38px rgba(31, 42, 56, 0.12);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.55;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      min-height: 64px;
+      padding: 0 32px;
+      border-bottom: 1px solid rgba(215, 221, 230, 0.86);
+      background: rgba(245, 247, 250, 0.9);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 760;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--accent-strong);
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .nav a {
+      padding: 8px 10px;
+      border-radius: 6px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .nav a:hover {
+      background: var(--panel-strong);
+      color: var(--ink);
+    }
+
+    .hero {
+      position: relative;
+      min-height: calc(100vh - 64px);
+      overflow: hidden;
+      display: grid;
+      align-items: center;
+      padding: 72px 32px 96px;
+      background: #e7edf2;
+      border-bottom: 1px solid var(--line);
+    }
+
+    #heroCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(245, 247, 250, 0.94), rgba(245, 247, 250, 0.7), rgba(245, 247, 250, 0.2));
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      width: min(1120px, 100%);
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--accent-strong);
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 780px;
+      font-size: clamp(42px, 7vw, 86px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      max-width: 720px;
+      margin: 24px 0 0;
+      color: #364353;
+      font-size: clamp(18px, 2.2vw, 24px);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--ink);
+      font-weight: 720;
+      box-shadow: 0 8px 18px rgba(31, 42, 56, 0.08);
+      cursor: pointer;
+    }
+
+    .button.primary {
+      border-color: var(--accent-strong);
+      background: var(--accent-strong);
+      color: white;
+    }
+
+    .button.warm {
+      border-color: var(--warm);
+      background: var(--warm);
+      color: white;
+    }
+
+    .section {
+      padding: 74px 32px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section.alt {
+      background: #ffffff;
+    }
+
+    .section-inner {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(260px, 0.6fr);
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 46px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .section-head p,
+    .lead {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .metric-grid,
+    .feature-grid,
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .metric,
+    .feature,
+    .video-card {
+      min-height: 150px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 10px 24px rgba(31, 42, 56, 0.07);
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--accent-strong);
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .metric span,
+    .feature p,
+    .video-card p {
+      display: block;
+      margin-top: 10px;
+      color: var(--muted);
+    }
+
+    .feature h3,
+    .video-card h3 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.25;
+    }
+
+    .feature-tag {
+      display: inline-flex;
+      margin-bottom: 14px;
+      padding: 4px 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--accent-strong);
+      background: var(--panel-strong);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .demo-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.7fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      min-height: 520px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f8fafc;
+      box-shadow: var(--shadow);
+    }
+
+    .demo-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+    }
+
+    .panel {
+      display: grid;
+      align-content: start;
+      gap: 16px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 10px 24px rgba(31, 42, 56, 0.07);
+    }
+
+    .panel h3 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .panel p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 48px);
+      gap: 8px;
+      justify-content: start;
+      align-items: center;
+    }
+
+    .control-grid button,
+    .inline-controls button {
+      min-width: 48px;
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-strong);
+      color: var(--ink);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .control-grid button:hover,
+    .inline-controls button:hover,
+    .control-grid button.active {
+      border-color: var(--accent);
+      background: #dbeef2;
+    }
+
+    .inline-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .status-list {
+      display: grid;
+      gap: 8px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .status-list strong {
+      color: var(--ink);
+    }
+
+    .video-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .video-link {
+      align-self: flex-start;
+      display: inline-flex;
+      min-height: 40px;
+      align-items: center;
+      padding: 8px 12px;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent-strong);
+      background: #eef8fa;
+      font-weight: 760;
+    }
+
+    .video-link:hover {
+      background: #dbeef2;
+    }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      background: rgba(15, 23, 42, 0.72);
+    }
+
+    .lightbox[hidden] {
+      display: none;
+    }
+
+    .lightbox-panel {
+      width: min(980px, 100%);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #0f172a;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+    }
+
+    .lightbox-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 16px;
+      color: #f8fafc;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .lightbox-title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.3;
+    }
+
+    .lightbox-close {
+      display: inline-grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #f8fafc;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .lightbox-close:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .lightbox-video {
+      display: block;
+      width: 100%;
+      max-height: min(72vh, 720px);
+      background: #020617;
+    }
+
+    .lightbox-link {
+      display: block;
+      padding: 12px 16px 16px;
+      color: #bfdbfe;
+      word-break: break-all;
+    }
+
+    .code-block {
+      overflow-x: auto;
+      margin: 0;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #111827;
+      color: #e5e7eb;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .footer {
+      padding: 30px 32px;
+      color: var(--muted);
+      background: #ffffff;
+      text-align: center;
+    }
+
+    @media (max-width: 860px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 14px 18px;
+      }
+
+      .nav {
+        justify-content: flex-start;
+      }
+
+      .hero {
+        min-height: 760px;
+        padding: 54px 18px 74px;
+      }
+
+      .hero::after {
+        background: rgba(245, 247, 250, 0.88);
+      }
+
+      .section {
+        padding: 54px 18px;
+      }
+
+      .section-head,
+      .demo-shell,
+      .metric-grid,
+      .feature-grid,
+      .video-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .canvas-wrap,
+      .demo-canvas {
+        min-height: 420px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar" aria-label="站点导航">
+    <a class="brand" href="#top" aria-label="KiBotOne 首页">
+      <span class="brand-mark">K</span>
+      <span>KiBotOne</span>
+    </a>
+    <nav class="nav" aria-label="页面章节">
+      <a href="#overview">成果</a>
+      <a href="#manual-demo">手操演示</a>
+      <a href="#avoidance-demo">避障导航</a>
+      <a href="#videos">视频演示</a>
+      <a href="#usage">运行方式</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-label="KiBotOne 项目展示">
+      <canvas id="heroCanvas" aria-hidden="true"></canvas>
+      <div class="hero-inner">
+        <p class="eyebrow">ROS 2 · Gazebo Sim · 模式控制 · 自主避障</p>
+        <h1>KiBotOne</h1>
+        <p class="hero-copy">
+          一个面向移动机器人控制实验的 ROS 2 仿真项目，覆盖手动控制、巡航、停止、目标跟随与基于激光雷达的局部避障导航。
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#manual-demo">查看手操演示</a>
+          <a class="button warm" href="#avoidance-demo">查看避障导航</a>
+          <a class="button" href="#videos">视频演示</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="overview">
+      <div class="section-inner">
+        <div class="section-head">
+          <h2>项目成果</h2>
+          <p>当前系统已经形成了可启动、可切换模式、可手操、可跟随和可避障的完整仿真闭环。</p>
+        </div>
+        <div class="metric-grid">
+          <div class="metric">
+            <strong>4 种运行模式</strong>
+            <span>STOP、CRUISE、MANUAL、FOLLOW 四种运行模式。</span>
+          </div>
+          <div class="metric">
+            <strong>6 种位姿数据</strong>
+            <span>桥接速度、里程计、TF、雷达、机器人位姿和目标位姿。</span>
+          </div>
+          <div class="metric">
+            <strong>1 个统一入口</strong>
+            <span>统一 bringup 入口，直接拉起仿真、桥接和核心控制节点。</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="architecture">
+      <div class="section-inner">
+        <div class="section-head">
+          <h2>核心模块</h2>
+          <p>页面中的演示是前端 HTML 复现，实际项目实现位于 ROS 2 包中。</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature">
+            <span class="feature-tag">kibot_one_sim</span>
+            <h3>Gazebo 仿真资源</h3>
+            <p>提供机器人模型、跟随旗标、普通世界和障碍物世界，并通过 launch 自动设置模型资源路径。</p>
+          </article>
+          <article class="feature">
+            <span class="feature-tag">kibot_one_control</span>
+            <h3>模式与速度控制</h3>
+            <p>模式服务负责 STOP、CRUISE、MANUAL、FOLLOW 切换，速度看门狗负责超时停车。</p>
+          </article>
+          <article class="feature">
+            <span class="feature-tag">follow_controller</span>
+            <h3>局部避障跟随</h3>
+            <p>控制器结合机器人位姿、目标位姿和 LaserScan，在候选航向中选择更安全的运动方向。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="manual-demo">
+      <div class="section-inner">
+        <div class="section-head">
+          <h2>手操 HTML 演示</h2>
+          <p>直接使用键盘 WASD 或方向键控制机器人，按住时持续发布速度，松开后立即停止；Enter 或 Space 也可停车。</p>
+        </div>
+        <div class="demo-shell">
+          <div class="canvas-wrap">
+            <canvas class="demo-canvas" id="manualCanvas" tabindex="0" aria-label="手操演示画布"></canvas>
+          </div>
+          <aside class="panel">
+            <h3>MANUAL 控制</h3>
+            <p>机器人会持续显示最近轨迹，并模拟 `/cmd_vel_raw` topic 的按住发布、松开停止行为。</p>
+            <div class="control-grid" aria-label="手操按钮">
+              <span></span>
+              <button type="button" data-manual="forward" aria-label="前进">W</button>
+              <span></span>
+              <button type="button" data-manual="left" aria-label="左转">A</button>
+              <button type="button" data-manual="stop" aria-label="停止">●</button>
+              <button type="button" data-manual="right" aria-label="右转">D</button>
+              <span></span>
+              <button type="button" data-manual="back" aria-label="后退">S</button>
+              <span></span>
+            </div>
+            <ul class="status-list">
+              <li><strong>线速度</strong> <span id="manualLinear">0.00 m/s</span></li>
+              <li><strong>角速度</strong> <span id="manualAngular">0.00 rad/s</span></li>
+              <li><strong>最近命令</strong> <span id="manualCommand">停止</span></li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="avoidance-demo">
+      <div class="section-inner">
+        <div class="section-head">
+          <h2>自主避障导航 HTML 演示</h2>
+          <p>演示会模拟机器人朝目标点移动，并在障碍物附近选择更安全的航向。可直接拖动橙色目标点和灰色障碍物。</p>
+        </div>
+        <div class="demo-shell">
+          <div class="canvas-wrap">
+            <canvas class="demo-canvas" id="avoidCanvas" aria-label="自主避障导航演示画布"></canvas>
+          </div>
+          <aside class="panel">
+            <h3>FOLLOW + 避障</h3>
+            <p>蓝色轨迹表示机器人走过的路径，橙色目标点对应跟随旗标，灰色圆形表示障碍物，外侧半透明环表示障碍物实体加机器人安全半径后的占用区域。</p>
+            <div class="inline-controls">
+              <button type="button" id="toggleAvoid">暂停</button>
+              <button type="button" id="resetAvoid">重置</button>
+              <button type="button" id="moveGoal">切换目标</button>
+            </div>
+            <ul class="status-list">
+              <li><strong>目标距离</strong> <span id="avoidDistance">0.00 m</span></li>
+              <li><strong>安全航向</strong> <span id="avoidHeading">0.00 rad</span></li>
+              <li><strong>机器人安全半径</strong> <span id="avoidSafety">0.00 m</span></li>
+              <li><strong>控制状态</strong> <span id="avoidStatus">运行中</span></li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="videos">
+      <div class="section-inner">
+        <div class="section-head">
+          <h2>视频演示</h2>
+        </div>
+        <div class="video-grid">
+          <article class="video-card">
+            <div>
+              <h3>完整 bringup 与模式切换</h3>
+              <p>展示统一 launch 拉起 Gazebo、bridge、模式控制、看门狗和跟随控制器。</p>
+            </div>
+            <a class="video-link" href="https://tuchuang-1317479375.cos.ap-beijing.myqcloud.com/1777029137.mp4">打开视频</a>
+          </article>
+          <article class="video-card">
+            <div>
+              <h3>手操控制</h3>
+              <p>展示控制台 TUI 中选择 MANUAL 模式，并通过 WASD 或方向键控制机器人。</p>
+            </div>
+            <a class="video-link" href="https://tuchuang-1317479375.cos.ap-beijing.myqcloud.com/1775641128.mp4">打开视频</a>
+          </article>
+          <article class="video-card">
+            <div>
+              <h3>自主避障导航</h3>
+              <p>展示 FOLLOW 模式下机器人跟随目标，同时依据雷达数据避开障碍物。</p>
+            </div>
+            <a class="video-link" href="https://tuchuang-1317479375.cos.ap-beijing.myqcloud.com/1776855112.mp4">打开视频</a>
+          </article>
+          <article class="video-card">
+            <div>
+              <h3>控制台手操演示</h3>
+              <p>展示 `control_console.launch.py` 中选择 MANUAL，并通过键盘完成手操控制。</p>
+            </div>
+            <a class="video-link" href="https://tuchuang-1317479375.cos.ap-beijing.myqcloud.com/MANUAL1777026336.mp4">打开视频</a>
+          </article>
+          <article class="video-card">
+            <div>
+              <h3>控制台巡航演示</h3>
+              <p>展示 `control_console.launch.py` 中选择 CRUISE，并输入线速度和角速度。</p>
+            </div>
+            <a class="video-link" href="https://tuchuang-1317479375.cos.ap-beijing.myqcloud.com/CRUISE1777026410.mp4">打开视频</a>
+          </article>
+          <article class="video-card">
+            <div>
+              <h3>控制台跟随演示</h3>
+              <p>展示 `control_console.launch.py` 中切换 FOLLOW，让机器人进入目标跟随。</p>
+            </div>
+            <a class="video-link" href="https://tuchuang-1317479375.cos.ap-beijing.myqcloud.com/FOLLOW1777026483.mp4">打开视频</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="usage">
+      <div class="section-inner">
+        <div class="section-head">
+          <h2>运行方式</h2>
+          <p>仓库构建后，可以使用统一入口启动仿真，再通过控制台 TUI 切换模式。</p>
+        </div>
+        <pre class="code-block"><code>source .vscode/project-terminal-init.sh
+colcon build
+source install/setup.bash
+
+ros2 launch kibot_one_sim kibot_one.launch.py
+
+# 另开一个终端
+source .vscode/project-terminal-init.sh
+source install/setup.bash
+ros2 run kibot_one_control control_console</code></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    KiBotOne · ROS 2 移动机器人仿真与控制展示页
+  </footer>
+
+  <div class="lightbox" id="videoLightbox" hidden aria-modal="true" role="dialog" aria-labelledby="lightboxTitle">
+    <div class="lightbox-panel">
+      <div class="lightbox-head">
+        <h2 class="lightbox-title" id="lightboxTitle">视频演示</h2>
+        <button class="lightbox-close" type="button" id="closeLightbox" aria-label="关闭视频">×</button>
+      </div>
+      <video class="lightbox-video" id="lightboxVideo" controls preload="metadata"></video>
+      <a class="lightbox-link" id="lightboxSource" href="#" target="_blank" rel="noreferrer">在新标签页打开源视频</a>
+    </div>
+  </div>
+
+  <script>
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+    const wrapAngle = (angle) => Math.atan2(Math.sin(angle), Math.cos(angle));
+
+    function fitCanvas(canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
+      const width = Math.max(320, Math.floor(rect.width * ratio));
+      const height = Math.max(320, Math.floor(rect.height * ratio));
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+      }
+      return { width, height, ratio };
+    }
+
+    function drawGrid(ctx, width, height, step, color) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1;
+      for (let x = 0; x <= width; x += step) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= height; y += step) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function drawRobot(ctx, x, y, heading, radius, bodyColor) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(heading);
+      ctx.fillStyle = bodyColor;
+      ctx.strokeStyle = "#13212f";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(-radius * 1.1, -radius * 0.8, radius * 2.2, radius * 1.6, radius * 0.32);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.arc(radius * 0.68, 0, radius * 0.24, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "#13212f";
+      ctx.fillRect(-radius * 0.72, -radius * 0.92, radius * 0.38, radius * 0.2);
+      ctx.fillRect(-radius * 0.72, radius * 0.72, radius * 0.38, radius * 0.2);
+      ctx.fillRect(radius * 0.34, -radius * 0.92, radius * 0.38, radius * 0.2);
+      ctx.fillRect(radius * 0.34, radius * 0.72, radius * 0.38, radius * 0.2);
+      ctx.restore();
+    }
+
+    function initHero() {
+      const canvas = document.getElementById("heroCanvas");
+      const ctx = canvas.getContext("2d");
+      const robot = { t: 0 };
+
+      function frame() {
+        const { width, height } = fitCanvas(canvas);
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = "#e7edf2";
+        ctx.fillRect(0, 0, width, height);
+        drawGrid(ctx, width, height, 56 * (window.devicePixelRatio || 1), "rgba(115, 128, 145, 0.24)");
+
+        const cx = width * 0.72;
+        const cy = height * 0.52;
+        const rx = Math.min(width, height) * 0.23;
+        const ry = Math.min(width, height) * 0.16;
+        const points = [];
+        for (let i = 0; i < 160; i += 1) {
+          const t = (i / 160) * Math.PI * 2;
+          points.push([cx + Math.cos(t) * rx, cy + Math.sin(t * 1.35) * ry]);
+        }
+
+        ctx.strokeStyle = "rgba(31, 122, 140, 0.46)";
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        points.forEach(([x, y], index) => {
+          if (index === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+
+        const obstacles = [
+          [width * 0.62, height * 0.35, 34],
+          [width * 0.82, height * 0.42, 48],
+          [width * 0.73, height * 0.7, 40],
+          [width * 0.9, height * 0.64, 28],
+        ];
+        obstacles.forEach(([x, y, r]) => {
+          ctx.fillStyle = "rgba(92, 104, 120, 0.28)";
+          ctx.beginPath();
+          ctx.arc(x, y, r * (window.devicePixelRatio || 1), 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        robot.t = (robot.t + 0.0018) % 1;
+        const idx = Math.floor(robot.t * points.length);
+        const next = points[(idx + 1) % points.length];
+        const current = points[idx];
+        const heading = Math.atan2(next[1] - current[1], next[0] - current[0]);
+        drawRobot(ctx, current[0], current[1], heading, 30 * (window.devicePixelRatio || 1), "#1f7a8c");
+        requestAnimationFrame(frame);
+      }
+
+      frame();
+    }
+
+    function initManualDemo() {
+      const canvas = document.getElementById("manualCanvas");
+      const ctx = canvas.getContext("2d");
+      const linearEl = document.getElementById("manualLinear");
+      const angularEl = document.getElementById("manualAngular");
+      const commandEl = document.getElementById("manualCommand");
+      const pressedKeys = new Set();
+      const state = {
+        x: 0,
+        y: 0,
+        heading: -0.2,
+        linear: 0,
+        angular: 0,
+        trail: [],
+        command: "停止",
+        lastTime: performance.now(),
+      };
+
+      function applyCommand(command) {
+        const speed = 82;
+        const turn = 1.9;
+        state.linear = 0;
+        state.angular = 0;
+        if (command === "forward") {
+          state.linear = speed;
+          state.command = "前进";
+        } else if (command === "back") {
+          state.linear = -speed * 0.72;
+          state.command = "后退";
+        } else if (command === "left") {
+          state.angular = -turn;
+          state.command = "左转";
+        } else if (command === "right") {
+          state.angular = turn;
+          state.command = "右转";
+        } else {
+          state.command = "停止";
+        }
+        updateManualStatus();
+      }
+
+      function commandFromPressedKeys() {
+        if (pressedKeys.has("w") || pressedKeys.has("ArrowUp")) return "forward";
+        if (pressedKeys.has("s") || pressedKeys.has("ArrowDown")) return "back";
+        if (pressedKeys.has("a") || pressedKeys.has("ArrowLeft")) return "left";
+        if (pressedKeys.has("d") || pressedKeys.has("ArrowRight")) return "right";
+        return "stop";
+      }
+
+      function refreshCommandFromKeys() {
+        applyCommand(commandFromPressedKeys());
+      }
+
+      function updateManualStatus() {
+        linearEl.textContent = `${(state.linear / 100).toFixed(2)} m/s`;
+        angularEl.textContent = `${state.angular.toFixed(2)} rad/s`;
+        commandEl.textContent = state.command;
+      }
+
+      function isManualKey(key) {
+        const normalized = key.length === 1 ? key.toLowerCase() : key;
+        return ["w", "s", "a", "d", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", " "].includes(normalized);
+      }
+
+      function handleKeyDown(event) {
+        if (!isManualKey(event.key)) return;
+        event.preventDefault();
+        const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+        if (key === "Enter" || key === " ") {
+          pressedKeys.clear();
+          applyCommand("stop");
+          return;
+        }
+        pressedKeys.add(key);
+        refreshCommandFromKeys();
+      }
+
+      function handleKeyUp(event) {
+        if (!isManualKey(event.key)) return;
+        event.preventDefault();
+        const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+        pressedKeys.delete(key);
+        refreshCommandFromKeys();
+      }
+
+      function bindHoldButton(button) {
+        const command = button.dataset.manual;
+        const start = (event) => {
+          event.preventDefault();
+          canvas.focus();
+          if (command === "stop") {
+            pressedKeys.clear();
+            applyCommand("stop");
+            return;
+          }
+          applyCommand(command);
+          button.classList.add("active");
+          button.setPointerCapture?.(event.pointerId);
+        };
+        const stop = (event) => {
+          event.preventDefault();
+          button.classList.remove("active");
+          applyCommand("stop");
+        };
+        button.addEventListener("pointerdown", start);
+        button.addEventListener("pointerup", stop);
+        button.addEventListener("pointercancel", stop);
+        button.addEventListener("pointerleave", stop);
+      }
+
+      document.querySelectorAll("[data-manual]").forEach((button) => {
+        bindHoldButton(button);
+      });
+      canvas.addEventListener("keydown", handleKeyDown);
+      canvas.addEventListener("keyup", handleKeyUp);
+      window.addEventListener("keydown", handleKeyDown);
+      window.addEventListener("keyup", handleKeyUp);
+      window.addEventListener("blur", () => {
+        pressedKeys.clear();
+        applyCommand("stop");
+      });
+
+      function frame(now) {
+        const { width, height } = fitCanvas(canvas);
+        const dt = Math.min(0.05, (now - state.lastTime) / 1000);
+        state.lastTime = now;
+        if (state.x === 0 && state.y === 0) {
+          state.x = width * 0.48;
+          state.y = height * 0.55;
+        }
+
+        state.heading += state.angular * dt;
+        state.x += Math.cos(state.heading) * state.linear * dt * (window.devicePixelRatio || 1);
+        state.y += Math.sin(state.heading) * state.linear * dt * (window.devicePixelRatio || 1);
+        state.x = clamp(state.x, 42, width - 42);
+        state.y = clamp(state.y, 42, height - 42);
+        state.trail.push([state.x, state.y]);
+        if (state.trail.length > 160) state.trail.shift();
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = "#f8fafc";
+        ctx.fillRect(0, 0, width, height);
+        drawGrid(ctx, width, height, 44 * (window.devicePixelRatio || 1), "#e3e8ef");
+
+        ctx.strokeStyle = "#1f7a8c";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        state.trail.forEach(([x, y], index) => {
+          if (index === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+
+        drawRobot(ctx, state.x, state.y, state.heading, 28 * (window.devicePixelRatio || 1), "#2f7d57");
+        requestAnimationFrame(frame);
+      }
+
+      updateManualStatus();
+      requestAnimationFrame(frame);
+    }
+
+    function initAvoidanceDemo() {
+      const canvas = document.getElementById("avoidCanvas");
+      const ctx = canvas.getContext("2d");
+      const toggleButton = document.getElementById("toggleAvoid");
+      const resetButton = document.getElementById("resetAvoid");
+      const moveGoalButton = document.getElementById("moveGoal");
+      const distanceEl = document.getElementById("avoidDistance");
+      const headingEl = document.getElementById("avoidHeading");
+      const safetyEl = document.getElementById("avoidSafety");
+      const statusEl = document.getElementById("avoidStatus");
+      const state = {
+        running: true,
+        x: 90,
+        y: 340,
+        heading: -0.18,
+        goalIndex: 0,
+        goals: [
+          { x: 0.78, y: 0.28 },
+          { x: 0.76, y: 0.72 },
+          { x: 0.22, y: 0.28 },
+        ],
+        obstacles: [
+          { x: 0.34, y: 0.46, r: 0.085 },
+          { x: 0.51, y: 0.28, r: 0.066 },
+          { x: 0.58, y: 0.62, r: 0.1 },
+          { x: 0.72, y: 0.48, r: 0.074 },
+        ],
+        trail: [],
+        lastTime: performance.now(),
+        selectedHeading: 0,
+        selectedClearance: 0,
+        shouldReverse: false,
+        safetyPadding: 0,
+        dragTarget: null,
+      };
+
+      function reset() {
+        state.x = 90;
+        state.y = canvas.height * 0.72 || 340;
+        state.heading = -0.18;
+        state.trail = [];
+        state.selectedHeading = 0;
+        state.selectedClearance = 0;
+        state.shouldReverse = false;
+        state.running = true;
+        toggleButton.textContent = "暂停";
+      }
+
+      function getObstacles(width, height) {
+        const scale = Math.min(width, height);
+        return state.obstacles.map((obstacle, index) => ({
+          index,
+          x: obstacle.x * width,
+          y: obstacle.y * height,
+          r: obstacle.r * scale,
+        }));
+      }
+
+      function buildScanPoints(obstacles) {
+        const points = [];
+        obstacles.forEach((obstacle) => {
+          const samples = 56;
+          for (let index = 0; index < samples; index += 1) {
+            const angle = (index / samples) * Math.PI * 2;
+            points.push({
+              x: obstacle.x + Math.cos(angle) * obstacle.r,
+              y: obstacle.y + Math.sin(angle) * obstacle.r,
+            });
+          }
+        });
+        return points;
+      }
+
+      function worldToRobotFrame(point) {
+        const dx = point.x - state.x;
+        const dy = point.y - state.y;
+        const cosYaw = Math.cos(state.heading);
+        const sinYaw = Math.sin(state.heading);
+        return {
+          x: dx * cosYaw + dy * sinYaw,
+          y: -dx * sinYaw + dy * cosYaw,
+        };
+      }
+
+      function directionClearance(relativeHeading, safeRadius, scanRangeLimit, scanPoints, robotBodyRadius) {
+        const directionX = Math.cos(relativeHeading);
+        const directionY = Math.sin(relativeHeading);
+        let minClearance = scanRangeLimit;
+
+        scanPoints.forEach((point) => {
+          const local = worldToRobotFrame(point);
+          const measuredRange = Math.hypot(local.x, local.y);
+          if (!Number.isFinite(measuredRange) || measuredRange > scanRangeLimit) return;
+
+          if (Math.hypot(local.x, local.y) <= robotBodyRadius + 2) return;
+
+          const projection = local.x * directionX + local.y * directionY;
+          if (projection <= 0 || projection > scanRangeLimit) return;
+
+          const perpendicular = Math.abs(local.x * directionY - local.y * directionX);
+          if (perpendicular >= safeRadius) return;
+
+          const offset = Math.sqrt(Math.max(0, safeRadius * safeRadius - perpendicular * perpendicular));
+          const entryDistance = projection - offset;
+          if (entryDistance <= 0) {
+            minClearance = 0;
+            return;
+          }
+
+          if (entryDistance < minClearance) {
+            minClearance = entryDistance;
+          }
+        });
+
+        return minClearance;
+      }
+
+      function selectHeading(goalHeadingError, goalDistance, scanPoints, params) {
+        const safeRadius = params.robotBodyRadius + params.obstaclePadding;
+        const scanRangeLimit = params.scanRangeLimit;
+        const goalClearance = directionClearance(
+          goalHeadingError,
+          safeRadius,
+          scanRangeLimit,
+          scanPoints,
+          params.robotBodyRadius
+        );
+        const directPathFree = goalClearance >= Math.min(goalDistance, scanRangeLimit);
+        const baseHeading = directPathFree ? goalHeadingError : 0;
+        const blockedDistance = safeRadius * params.blockedDistanceScale;
+
+        let bestHeading = goalHeadingError;
+        let bestClearance = goalClearance;
+        let bestScore = -Infinity;
+        let bestShouldReverse = false;
+
+        for (let index = 0; index < params.sectorCount; index += 1) {
+          const ratio = index / (params.sectorCount - 1);
+          const sectorHeading = wrapAngle(baseHeading - params.sectorFov / 2 + ratio * params.sectorFov);
+          const sectorClearance = directionClearance(
+            sectorHeading,
+            safeRadius,
+            scanRangeLimit,
+            scanPoints,
+            params.robotBodyRadius
+          );
+          const clearanceRatio = sectorClearance / scanRangeLimit;
+          const goalAlign = (Math.cos(wrapAngle(sectorHeading - goalHeadingError)) + 1) / 2;
+          const headingAlign = params.reverseHeadingBias
+            + (1 - params.reverseHeadingBias) * ((Math.cos(sectorHeading) + 1) / 2);
+          const shouldReverse = Math.abs(sectorHeading) > Math.PI / 2;
+
+          let score;
+          if (sectorClearance < blockedDistance) {
+            score = -9999 + clearanceRatio;
+          } else {
+            score = (
+              clearanceRatio * params.clearanceWeight
+              + goalAlign * params.goalWeight
+              + headingAlign * params.headingWeight
+            );
+          }
+
+          if (score > bestScore) {
+            bestScore = score;
+            bestHeading = sectorHeading;
+            bestClearance = sectorClearance;
+            bestShouldReverse = shouldReverse;
+          }
+        }
+
+        return {
+          heading: bestHeading,
+          clearance: bestClearance,
+          scanRangeLimit,
+          shouldReverse: bestShouldReverse,
+          safeRadius,
+        };
+      }
+
+      function canvasPoint(event) {
+        const rect = canvas.getBoundingClientRect();
+        const ratio = window.devicePixelRatio || 1;
+        return {
+          x: (event.clientX - rect.left) * ratio,
+          y: (event.clientY - rect.top) * ratio,
+        };
+      }
+
+      function getGoalPoint(width, height) {
+        const goal = state.goals[state.goalIndex];
+        return { x: goal.x * width, y: goal.y * height };
+      }
+
+      function pickDragTarget(point, width, height, obstacles) {
+        const goal = getGoalPoint(width, height);
+        if (Math.hypot(point.x - goal.x, point.y - goal.y) <= 30 * (window.devicePixelRatio || 1)) {
+          return { type: "goal", index: state.goalIndex };
+        }
+        for (const obstacle of obstacles) {
+          if (Math.hypot(point.x - obstacle.x, point.y - obstacle.y) <= obstacle.r + state.safetyPadding) {
+            return { type: "obstacle", index: obstacle.index };
+          }
+        }
+        return null;
+      }
+
+      function updateDragTarget(point, width, height) {
+        if (!state.dragTarget) return;
+        if (state.dragTarget.type === "goal") {
+          const goal = state.goals[state.dragTarget.index];
+          goal.x = clamp(point.x / width, 0.06, 0.94);
+          goal.y = clamp(point.y / height, 0.08, 0.92);
+          return;
+        }
+        const obstacle = state.obstacles[state.dragTarget.index];
+        obstacle.x = clamp(point.x / width, obstacle.r, 1 - obstacle.r);
+        obstacle.y = clamp(point.y / height, obstacle.r, 1 - obstacle.r);
+      }
+
+      toggleButton.addEventListener("click", () => {
+        state.running = !state.running;
+        toggleButton.textContent = state.running ? "暂停" : "继续";
+        statusEl.textContent = state.running ? "运行中" : "已暂停";
+      });
+
+      resetButton.addEventListener("click", reset);
+      moveGoalButton.addEventListener("click", () => {
+        state.goalIndex = (state.goalIndex + 1) % state.goals.length;
+      });
+
+      canvas.addEventListener("pointerdown", (event) => {
+        const { width, height } = fitCanvas(canvas);
+        const obstacles = getObstacles(width, height);
+        const point = canvasPoint(event);
+        state.dragTarget = pickDragTarget(point, width, height, obstacles);
+        if (state.dragTarget) {
+          canvas.setPointerCapture(event.pointerId);
+          canvas.style.cursor = "grabbing";
+          updateDragTarget(point, width, height);
+          state.trail = [];
+          event.preventDefault();
+        }
+      });
+
+      canvas.addEventListener("pointermove", (event) => {
+        if (!state.dragTarget) return;
+        const { width, height } = fitCanvas(canvas);
+        updateDragTarget(canvasPoint(event), width, height);
+        event.preventDefault();
+      });
+
+      const finishDrag = (event) => {
+        if (!state.dragTarget) return;
+        state.dragTarget = null;
+        canvas.releasePointerCapture?.(event.pointerId);
+        canvas.style.cursor = "grab";
+        event.preventDefault();
+      };
+      canvas.addEventListener("pointerup", finishDrag);
+      canvas.addEventListener("pointercancel", finishDrag);
+      canvas.style.cursor = "grab";
+
+      function frame(now) {
+        const { width, height, ratio } = fitCanvas(canvas);
+        const params = {
+          stopDistance: 60 * ratio,
+          headingTolerance: 0.2,
+          linearGain: 0.6,
+          angularGain: 1.8,
+          maxLinearSpeed: 50 * ratio,
+          maxAngularSpeed: 1.2,
+          turnOnlyAngle: 0.8,
+          reverseTurnOnlyAngle: 2.4,
+          sectorCount: 31,
+          sectorFov: Math.PI * 2,
+          scanRangeLimit: 250 * ratio,
+          robotBodyRadius: 37 * ratio,
+          obstaclePadding: 5 * ratio,
+          blockedDistanceScale: 1.1,
+          minSpeedFactor: 0.28,
+          reverseSpeedRatio: 0.45,
+          reverseHeadingBias: 0.3,
+          clearanceWeight: 0.52,
+          goalWeight: 0.34,
+          headingWeight: 0.14,
+        };
+        state.safetyPadding = params.robotBodyRadius + params.obstaclePadding;
+        const dt = Math.min(0.05, (now - state.lastTime) / 1000);
+        state.lastTime = now;
+        if (state.x < 120 && state.y > height) reset();
+
+        const obstacles = getObstacles(width, height);
+        const goal = getGoalPoint(width, height);
+        const goalX = goal.x;
+        const goalY = goal.y;
+        const dx = goalX - state.x;
+        const dy = goalY - state.y;
+        const distance = Math.hypot(dx, dy);
+        const goalHeading = Math.atan2(dy, dx);
+        const goalHeadingError = wrapAngle(goalHeading - state.heading);
+        const scanPoints = buildScanPoints(obstacles);
+        const selected = selectHeading(goalHeadingError, distance, scanPoints, params);
+        state.selectedHeading = selected.heading;
+        state.selectedClearance = selected.clearance;
+        state.shouldReverse = selected.shouldReverse;
+
+        obstacles.forEach((obstacle) => {
+          const safe = obstacle.r + selected.safeRadius;
+          const distanceToObstacle = Math.hypot(state.x - obstacle.x, state.y - obstacle.y);
+          if (distanceToObstacle < safe) {
+            const pushHeading = Math.atan2(state.y - obstacle.y, state.x - obstacle.x);
+            const push = safe - distanceToObstacle + 2 * ratio;
+            state.x += Math.cos(pushHeading) * push;
+            state.y += Math.sin(pushHeading) * push;
+          }
+        });
+
+        if (state.running && distance > params.stopDistance) {
+          const angularSpeed = clamp(
+            params.angularGain * selected.heading,
+            -params.maxAngularSpeed,
+            params.maxAngularSpeed
+          );
+          state.heading = wrapAngle(state.heading + angularSpeed * dt);
+
+          const activeTurnOnlyAngle = selected.shouldReverse
+            ? params.reverseTurnOnlyAngle
+            : params.turnOnlyAngle;
+          let commandSpeed = 0;
+
+          if (Math.abs(selected.heading) < activeTurnOnlyAngle) {
+            let motionHeadingError = selected.heading;
+            if (selected.shouldReverse) {
+              motionHeadingError = wrapAngle(selected.heading - Math.PI);
+            }
+
+            let headingSpeedFactor = 1;
+            if (Math.abs(motionHeadingError) >= params.headingTolerance) {
+              headingSpeedFactor = Math.max(0, Math.cos(motionHeadingError));
+            }
+
+            const baseLinearSpeed = Math.min(
+              params.maxLinearSpeed,
+              params.linearGain * Math.max(0, distance - params.stopDistance)
+            );
+            const clearanceSpeedFactor = clamp(
+              selected.clearance / selected.scanRangeLimit,
+              params.minSpeedFactor,
+              1
+            );
+            commandSpeed = baseLinearSpeed * headingSpeedFactor * clearanceSpeedFactor;
+            if (selected.shouldReverse) {
+              commandSpeed *= params.reverseSpeedRatio;
+              commandSpeed *= -1;
+            }
+          }
+
+          state.x += Math.cos(state.heading) * commandSpeed * dt;
+          state.y += Math.sin(state.heading) * commandSpeed * dt;
+          state.trail.push([state.x, state.y]);
+          if (state.trail.length > 220) state.trail.shift();
+          statusEl.textContent = "运行中";
+        } else if (distance <= params.stopDistance) {
+          statusEl.textContent = "已到达目标";
+        }
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = "#f8fafc";
+        ctx.fillRect(0, 0, width, height);
+        drawGrid(ctx, width, height, 44 * (window.devicePixelRatio || 1), "#e3e8ef");
+
+        ctx.strokeStyle = "#1f7a8c";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        state.trail.forEach(([x, y], index) => {
+          if (index === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+
+        obstacles.forEach((obstacle) => {
+          const safeRadius = obstacle.r + selected.safeRadius;
+          ctx.fillStyle = "rgba(197, 107, 45, 0.12)";
+          ctx.beginPath();
+          ctx.arc(obstacle.x, obstacle.y, safeRadius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.setLineDash([8 * ratio, 8 * ratio]);
+          ctx.strokeStyle = "rgba(197, 107, 45, 0.72)";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          ctx.fillStyle = "rgba(92, 104, 120, 0.3)";
+          ctx.beginPath();
+          ctx.arc(obstacle.x, obstacle.y, obstacle.r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = "rgba(92, 104, 120, 0.65)";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        });
+
+        ctx.fillStyle = "#c56b2d";
+        ctx.beginPath();
+        ctx.arc(goalX, goalY, 16 * (window.devicePixelRatio || 1), 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#8a431c";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        ctx.fillStyle = "#8a431c";
+        ctx.font = `${13 * ratio}px Inter, sans-serif`;
+        ctx.fillText("目标点可拖动", goalX + 22 * ratio, goalY - 18 * ratio);
+
+        ctx.strokeStyle = "rgba(197, 107, 45, 0.54)";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(state.x, state.y);
+        ctx.lineTo(
+          state.x + Math.cos(state.heading + state.selectedHeading) * 78 * ratio,
+          state.y + Math.sin(state.heading + state.selectedHeading) * 78 * ratio
+        );
+        ctx.stroke();
+
+        drawRobot(ctx, state.x, state.y, state.heading, 28 * (window.devicePixelRatio || 1), "#1f7a8c");
+        distanceEl.textContent = `${(distance / 100).toFixed(2)} m`;
+        headingEl.textContent = `${state.selectedHeading.toFixed(2)} rad`;
+        safetyEl.textContent = `${(selected.safeRadius / 100).toFixed(2)} m`;
+
+        requestAnimationFrame(frame);
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    if (!CanvasRenderingContext2D.prototype.roundRect) {
+      CanvasRenderingContext2D.prototype.roundRect = function roundRect(x, y, width, height, radius) {
+        const r = Math.min(radius, width / 2, height / 2);
+        this.beginPath();
+        this.moveTo(x + r, y);
+        this.arcTo(x + width, y, x + width, y + height, r);
+        this.arcTo(x + width, y + height, x, y + height, r);
+        this.arcTo(x, y + height, x, y, r);
+        this.arcTo(x, y, x + width, y, r);
+        this.closePath();
+        return this;
+      };
+    }
+
+    function initVideoLightbox() {
+      const lightbox = document.getElementById("videoLightbox");
+      const video = document.getElementById("lightboxVideo");
+      const title = document.getElementById("lightboxTitle");
+      const sourceLink = document.getElementById("lightboxSource");
+      const closeButton = document.getElementById("closeLightbox");
+
+      function closeLightbox() {
+        video.pause();
+        video.removeAttribute("src");
+        video.load();
+        lightbox.hidden = true;
+        document.body.style.overflow = "";
+      }
+
+      function openLightbox(link) {
+        const card = link.closest(".video-card");
+        const heading = card?.querySelector("h3")?.textContent?.trim() || "视频演示";
+        const source = link.getAttribute("href");
+        if (!source) return;
+
+        title.textContent = heading;
+        sourceLink.href = source;
+        sourceLink.textContent = source.includes("[[$")
+          ? "待替换视频链接"
+          : "在新标签页打开源视频";
+        if (source.includes("[[$")) {
+          video.removeAttribute("src");
+          video.load();
+        } else {
+          video.src = source;
+        }
+        lightbox.hidden = false;
+        document.body.style.overflow = "hidden";
+
+        if (!source.includes("[[$")) {
+          video.play().catch(() => {
+            video.controls = true;
+          });
+        }
+      }
+
+      document.querySelectorAll(".video-link").forEach((link) => {
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          openLightbox(link);
+        });
+      });
+
+      closeButton.addEventListener("click", closeLightbox);
+      lightbox.addEventListener("click", (event) => {
+        if (event.target === lightbox) {
+          closeLightbox();
+        }
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !lightbox.hidden) {
+          closeLightbox();
+        }
+      });
+    }
+
+    initVideoLightbox();
+    initHero();
+    initManualDemo();
+    initAvoidanceDemo();
+  </script>
+</body>
+</html>
