@@ -5,6 +5,7 @@ from pathlib import Path
 from ament_index_python.packages import get_package_share_directory # type: ignore
 from launch import LaunchDescription # type: ignore
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription # type: ignore
+from launch.conditions import IfCondition # type: ignore
 from launch.launch_description_sources import PythonLaunchDescriptionSource # type: ignore
 from launch.substitutions import LaunchConfiguration # type: ignore
 from launch_ros.actions import Node # type: ignore
@@ -19,18 +20,6 @@ def generate_launch_description() -> LaunchDescription:
         default_value=str(default_world),
         description="Gazebo 世界的绝对路径"
     )
-
-    stop_time_period_arg = DeclareLaunchArgument(
-        name="stop_time_period",
-        default_value="0.5",
-        description="cmd_vel watchdog 认为应当发生停止的超时时间，单位秒。"
-    )
-
-    watch_time_period_arg = DeclareLaunchArgument(
-        name="watch_time_period",
-        default_value="0.1",
-        description="cmd_vel watchdog 超时检查周期，单位秒。"
-    )
     mode_arg = DeclareLaunchArgument(
         name="mode",
         default_value="2",
@@ -40,6 +29,26 @@ def generate_launch_description() -> LaunchDescription:
         name="mode_pub_timer_period",
         default_value="0.01667",
         description="模式控制器发布 STOP, CRUISE 模式下速度的时间间隔，单位秒"
+    )
+    stop_time_period_arg = DeclareLaunchArgument(
+        name="stop_time_period",
+        default_value="0.5",
+        description="cmd_vel watchdog 认为应当发生停止的超时时间，单位秒。"
+    )
+    watch_time_period_arg = DeclareLaunchArgument(
+        name="watch_time_period",
+        default_value="0.1",
+        description="cmd_vel watchdog 超时检查周期，单位秒。"
+    )
+    start_follow_controller_arg = DeclareLaunchArgument(
+        name="start_follow_controller",
+        default_value="true",
+        description="是否启动 follow_controller。"
+    )
+    start_keyboard_teleop_arg = DeclareLaunchArgument(
+        name="start_keyboard_teleop",
+        default_value="false",
+        description="是否启动 keyboard_teleop。该节点需要可交互终端。"
     )
 
     start_sim = IncludeLaunchDescription(
@@ -69,14 +78,33 @@ def generate_launch_description() -> LaunchDescription:
             "mode_pub_timer_period": LaunchConfiguration("mode_pub_timer_period")
         }]
     )
+    start_follow_controller = Node(
+        package="kibot_one_control",
+        executable="follow_controller",
+        name="follow_controller",
+        output="screen",
+        condition=IfCondition(LaunchConfiguration("start_follow_controller")),
+    )
+    start_keyboard_teleop = Node(
+        package="kibot_one_control",
+        executable="keyboard_teleop",
+        name="keyboard_teleop",
+        output="screen",
+        emulate_tty=True,
+        condition=IfCondition(LaunchConfiguration("start_keyboard_teleop")),
+    )
 
     return LaunchDescription([
         world_arg,
-        stop_time_period_arg,
-        watch_time_period_arg,
         mode_arg,
         mode_pub_timer_period_arg,
+        stop_time_period_arg,
+        watch_time_period_arg,
+        start_follow_controller_arg,
+        start_keyboard_teleop_arg,
         start_sim,
         start_cmd_vel_watchdog,
         start_mode_control,
+        start_follow_controller,
+        start_keyboard_teleop,
     ])
