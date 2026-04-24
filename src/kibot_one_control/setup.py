@@ -13,6 +13,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/launch', [
+            'launch/control_console.launch.py',
             'launch/follow_phase1.launch.py',
             'launch/follow_phase2.launch.py',
         ]),
@@ -26,6 +27,7 @@ setup(
     entry_points={
         'console_scripts': [
             'cmd_vel_watchdog = kibot_one_control.cmd_vel_watchdog:main',
+            'control_console = kibot_one_control.control_console:main',
             'keyboard_teleop = kibot_one_control.keyboard_teleop:main',
             'mode_control = kibot_one_control.mode_control:main',
             'flag_pose_publisher = kibot_one_control.flag_pose_publisher:main',
